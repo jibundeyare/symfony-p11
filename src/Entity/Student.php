@@ -31,6 +31,9 @@ class Student
     #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'students')]
     private Collection $projects;
 
+    #[ORM\OneToOne(mappedBy: 'student', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -122,6 +125,28 @@ class Student
     public function removeProject(Project $project): static
     {
         $this->projects->removeElement($project);
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setStudent(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getStudent() !== $this) {
+            $user->setStudent($this);
+        }
+
+        $this->user = $user;
 
         return $this;
     }
