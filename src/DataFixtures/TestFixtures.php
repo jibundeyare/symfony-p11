@@ -2,6 +2,9 @@
 
 namespace App\DataFixtures;
 
+use DateTime;
+use App\Entity\SchoolYear;
+use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -30,7 +33,88 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
     {
         $this->manager = $manager;
 
+        $this->loadTags();
+        $this->loadSchoolYears();
         $this->loadUsers();
+    }
+
+    public function loadTags(): void
+    {
+        // données statiques
+        $datas = [
+            [
+                'name' => 'HTML',
+                'description' => null,
+            ],
+            [
+                'name' => 'CSS',
+                'description' => null,
+            ],
+            [
+                'name' => 'JS',
+                'description' => null,
+            ],
+        ];
+
+        foreach ($datas as $data) {
+            $tag = new Tag();
+            $tag->setName($data['name']);
+            $tag->setDescription($data['description']);
+
+            $this->manager->persist($tag);
+        }
+
+        $this->manager->flush();
+
+        // données dynamiques
+        for ($i = 0; $i < 10; $i++) {
+            $tag = new Tag();
+            $words = random_int(1, 3);
+            $tag->setName($this->faker->sentence($words));
+            $words = random_int(8, 15);
+            $tag->setDescription($this->faker->sentence($words));
+
+            $this->manager->persist($tag);
+        }
+
+        $this->manager->flush();
+    }
+
+    public function loadSchoolYears(): void
+    {
+        // données statiques
+        $datas = [
+            [
+                'name' => 'Alan Turing',
+                'description' => null,
+                'startDate' => new DateTime('2022-01-01'),
+                'endDate' => new DateTime('2022-12-31'),
+            ],
+            [
+                'name' => 'John von Neuman',
+                'description' => null,
+                'startDate' => new DateTime('2022-06-01'),
+                'endDate' => new DateTime('2023-05-31'),
+            ],
+            [
+                'name' => 'Brendan Eich',
+                'description' => null,
+                'startDate' => null,
+                'endDate' => null,
+            ],
+        ];
+
+        foreach ($datas as $data) {
+            $schoolYear = new SchoolYear();
+            $schoolYear->setName($data['name']);
+            $schoolYear->setDescription($data['description']);
+            $schoolYear->setStartDate($data['startDate']);
+            $schoolYear->setEndDate($data['endDate']);
+
+            $this->manager->persist($schoolYear);
+        }
+
+        $this->manager->flush();
     }
 
     public function loadUsers(): void
