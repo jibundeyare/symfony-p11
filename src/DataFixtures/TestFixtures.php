@@ -70,9 +70,9 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         for ($i = 0; $i < 10; $i++) {
             $tag = new Tag();
             $words = random_int(1, 3);
-            $tag->setName($this->faker->sentence($words));
+            $tag->setName($this->faker->unique()->sentence($words));
             $words = random_int(8, 15);
-            $tag->setDescription($this->faker->sentence($words));
+            $tag->setDescription($this->faker->optional($weight = 0.7)->sentence($words));
 
             $this->manager->persist($tag);
         }
@@ -110,6 +110,27 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $schoolYear->setDescription($data['description']);
             $schoolYear->setStartDate($data['startDate']);
             $schoolYear->setEndDate($data['endDate']);
+
+            $this->manager->persist($schoolYear);
+        }
+
+        $this->manager->flush();
+
+        // données dynamiques
+        for ($i = 0; $i < 10; $i++) {
+            $schoolYear = new SchoolYear();
+
+            $words = random_int(2, 4);
+            $schoolYear->setName($this->faker->unique()->sentence($words));
+
+            $words = random_int(8, 15);
+            $schoolYear->setDescription($this->faker->optional($weight = 0.7)->sentence($words));
+
+            $startDate = $this->faker->dateTimeBetween('-1 year', '-6 months');
+            $schoolYear->setStartDate($startDate);
+
+            $endDate = $this->faker->dateTimeBetween('-6 months', 'now');
+            $schoolYear->setEndDate($endDate);
 
             $this->manager->persist($schoolYear);
         }
@@ -153,7 +174,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         // données dynamiques
         for ($i = 0; $i < 100; $i++) {
             $user = new User();
-            $user->setEmail($this->faker->safeEmail());
+            $user->setEmail($this->faker->unique()->safeEmail());
             $password = $this->hasher->hashPassword($user, '123');
             $user->setPassword($password);
             $user->setRoles(['ROLE_USER']);
