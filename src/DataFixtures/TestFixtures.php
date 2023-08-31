@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use DateTime;
 use App\Entity\Project;
 use App\Entity\SchoolYear;
+use App\Entity\Student;
 use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -37,7 +38,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         $this->loadTags();
         $this->loadSchoolYears();
         $this->loadProjects();
-        $this->loadUsers();
+        $this->loadStudents();
     }
 
     public function loadTags(): void
@@ -234,24 +235,50 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         $this->manager->flush();
     }
 
-    public function loadUsers(): void
+    public function loadStudents(): void
     {
+        $repository = $this->manager->getRepository(SchoolYear::class);
+        $schoolYears = $repository->findAll();
+
+        $alanTuring = $repository->find(1);
+        $johnVonNeuman = $repository->find(2);
+        $brendanEich = $schoolYears[2];
+
+        $repository = $this->manager->getRepository(Project::class);
+        $projects = $repository->findAll();
+
+        $siteVitrine = $repository->find(1);
+        $wordpress = $repository->find(2);
+        $apiRest = $projects[2];
+
         // données statiques
         $datas = [
             [
                 'email' => 'foo@example.com',
                 'password' => '123',
                 'roles' => ['ROLE_USER'],
+                'firstname' => 'Foo',
+                'lastname' => 'Example',
+                'schoolYear' => $alanTuring,
+                'projects' => [$siteVitrine],
             ],
             [
                 'email' => 'bar@example.com',
                 'password' => '123',
                 'roles' => ['ROLE_USER'],
+                'firstname' => 'Bar',
+                'lastname' => 'Example',
+                'schoolYear' => $johnVonNeuman,
+                'projects' => [$wordpress],
             ],
             [
                 'email' => 'baz@example.com',
                 'password' => '123',
                 'roles' => ['ROLE_USER'],
+                'firstname' => 'Baz',
+                'lastname' => 'Example',
+                'schoolYear' => $brendanEich,
+                'projects' => [$apiRest],
             ],
         ];
 
@@ -263,6 +290,18 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $user->setRoles($data['roles']);
 
             $this->manager->persist($user);
+
+            $student = new Student();
+            $student->setFirstname($data['firstname']);
+            $student->setLastname($data['lastname']);
+            $student->setSchoolYear($data['schoolYear']);
+            $student->setUser($user);
+
+            // récupération du premier projet de la liste du student
+            $project = $data['projects'][0];
+            $student->addProject($project);
+
+            $this->manager->persist($student);
         }
 
         $this->manager->flush();
@@ -276,6 +315,20 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $user->setRoles(['ROLE_USER']);
 
             $this->manager->persist($user);
+
+            $student = new Student();
+            $student->setFirstname($this->faker->firstName());
+            $student->setLastname($this->faker->lastName());
+
+            $schoolYear = $this->faker->randomElement($schoolYears);
+            $student->setSchoolYear($schoolYear);
+
+            $project = $this->faker->randomElement($projects);
+            $student->addProject($project);
+
+            $student->setUser($user);
+
+            $this->manager->persist($student);
         }
 
         $this->manager->flush();
