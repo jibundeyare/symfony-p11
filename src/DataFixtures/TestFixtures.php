@@ -251,6 +251,13 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         $wordpress = $repository->find(2);
         $apiRest = $projects[2];
 
+        $repository = $this->manager->getRepository(Tag::class);
+        $tags = $repository->findAll();
+
+        $html = $repository->find(1);
+        $css = $repository->find(2);
+        $js = $tags[2];
+
         // données statiques
         $datas = [
             [
@@ -261,6 +268,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
                 'lastname' => 'Example',
                 'schoolYear' => $alanTuring,
                 'projects' => [$siteVitrine],
+                'tags' => [$html, $css],
             ],
             [
                 'email' => 'bar@example.com',
@@ -270,6 +278,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
                 'lastname' => 'Example',
                 'schoolYear' => $johnVonNeuman,
                 'projects' => [$wordpress],
+                'tags' => [$html, $css],
             ],
             [
                 'email' => 'baz@example.com',
@@ -279,6 +288,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
                 'lastname' => 'Example',
                 'schoolYear' => $brendanEich,
                 'projects' => [$apiRest],
+                'tags' => [$js],
             ],
         ];
 
@@ -300,6 +310,10 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             // récupération du premier projet de la liste du student
             $project = $data['projects'][0];
             $student->addProject($project);
+
+            foreach ($data['tags'] as $tag) {
+                $student->addTag($tag);
+            }
 
             $this->manager->persist($student);
         }
@@ -325,6 +339,13 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
 
             $project = $this->faker->randomElement($projects);
             $student->addProject($project);
+
+            $tagsCount = random_int(1, 4);
+            $shortList = $this->faker->randomElements($tags, $tagsCount);
+
+            foreach ($shortList as $tag) {
+                $student->addTag($tag);
+            }
 
             $student->setUser($user);
 
