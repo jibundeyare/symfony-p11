@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Exception;
+use App\Entity\SchoolYear;
 use App\Entity\Student;
 use App\Entity\Tag;
 use Doctrine\Persistence\ManagerRegistry;
@@ -85,6 +86,22 @@ class TestController extends AbstractController
         // récupération de la liste complète des objets
         $tags = $tagRepository->findAll();
 
+        // récupération des tags qui contiennent certains mot-clés
+        $keywordTags1 = $tagRepository->findByKeyword('HTML');
+        $keywordTags2 = $tagRepository->findByKeyword('libero');
+
+        // récupération des tags à partir d'une school year
+        $schoolYearRepository = $em->getRepository(SchoolYear::class);
+        $schoolYear = $schoolYearRepository->find(1);
+        $schoolYearTags = $tagRepository->findBySchoolYear($schoolYear);
+
+        // mise à jour des relations d'un tag
+        $studentRepository = $em->getRepository(Student::class);
+        $student = $studentRepository->find(2);
+        $htmlTag = $tagRepository->find(1);
+        $htmlTag->addStudent($student);
+        $em->flush();
+
         $title = 'Test des tags';
 
         return $this->render('test/tag.html.twig', [
@@ -94,6 +111,10 @@ class TestController extends AbstractController
             'cssTag' => $cssTag,
             'nullDescriptionTags' => $nullDescriptionTags,
             'notNullDescriptionTags' => $notNullDescriptionTags,
+            'keywordTags1' => $keywordTags1,
+            'keywordTags2' => $keywordTags2,
+            'schoolYearTags' => $schoolYearTags,
+            'htmlTag' => $htmlTag,
         ]);
     }
 

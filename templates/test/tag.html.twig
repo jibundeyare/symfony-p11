@@ -44,4 +44,37 @@
     </p>
 {% endfor %}
 
+<h2>Liste des tags avec mot-clé</h2>
+
+{% for tag in keywordTags1 %}
+    <h3>{{ tag.name }} (id {{ tag.id }})</h3>
+    <p>
+        {{ tag.description }}
+    </p>
+{% endfor %}
+
+{% for tag in keywordTags2 %}
+    <h3>{{ tag.name }} (id {{ tag.id }})</h3>
+    <p>
+        {{ tag.description }}
+    </p>
+{% endfor %}
+
+<h2>Liste des tags d'une school year</h2>
+
+{% for tag in schoolYearTags %}
+    <h3>{{ tag.name }} (id {{ tag.id }})</h3>
+    <p>
+        {{ tag.description }}
+    </p>
+{% endfor %}
+
+<h2>Liste des students du tag HTML</h2>
+
+<ul>
+{% for student in htmlTag.students %}
+    <li>{{ student.firstName }} {{ student.lastName }} (id {{ student.id }})</li>
+{% endfor %}
+</ul>
+
 {% endblock %}
