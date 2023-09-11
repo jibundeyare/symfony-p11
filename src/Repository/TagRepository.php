@@ -22,22 +22,22 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-   /**
-    * @return Tag[] Returns an array of Tag objects
-    */
-   public function findByNotNullDescription(): array
-   {
-       return $this->createQueryBuilder('t')
-           ->andWhere('t.description IS NOT null')
-           ->orderBy('t.name', 'ASC')
-           ->getQuery()
-           ->getResult()
-       ;
-   }
+    /**
+     * @return Tag[] Returns an array of Tag objects
+     */
+    public function findByNotNullDescription(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.description IS NOT null')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
-   /**
-    * @return Tag[] Returns an array of Tag objects
-    */
+    /**
+     * @return Tag[] Returns an array of Tag objects
+     */
     public function findByNullDescription(): array
     {
         return $this->createQueryBuilder('t')
@@ -48,11 +48,12 @@ class TagRepository extends ServiceEntityRepository
         ;
     }
 
-   /**
-    * This method finds all tags containing a keyword, anywhere in the tag name
-    * @param string $keyword The keyword to search for
-    * @return Tag[] Returns an array of Tag objects
-    */
+    /**
+     * This method finds all tags which contain a given keyword in the name or the 
+     * description
+     * @param string $keyword The keyword to search for
+     * @return Tag[] Returns an array of Tag objects
+     */
     public function findByKeyword(string $keyword): array
     {
         return $this->createQueryBuilder('t')

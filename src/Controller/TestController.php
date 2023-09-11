@@ -35,7 +35,7 @@ class TestController extends AbstractController
         }
 
         // récupération de l'objet dont l'id est 1
-        $tag = $tagRepository->find(1);
+        $htmlTag = $tagRepository->find(1);
 
         // récupération de l'objet dont l'id est 15
         $tag15 = $tagRepository->find(15);
@@ -98,7 +98,6 @@ class TestController extends AbstractController
         // mise à jour des relations d'un tag
         $studentRepository = $em->getRepository(Student::class);
         $student = $studentRepository->find(2);
-        $htmlTag = $tagRepository->find(1);
         $htmlTag->addStudent($student);
         $em->flush();
 
@@ -114,7 +113,6 @@ class TestController extends AbstractController
             'keywordTags1' => $keywordTags1,
             'keywordTags2' => $keywordTags2,
             'schoolYearTags' => $schoolYearTags,
-            'htmlTag' => $htmlTag,
         ]);
     }
 
