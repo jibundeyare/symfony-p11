@@ -37,13 +37,13 @@ class TestController extends AbstractController
         // récupération de l'objet dont l'id est 1
         $htmlTag = $tagRepository->find(1);
 
-        // récupération de l'objet dont l'id est 15
-        $tag15 = $tagRepository->find(15);
+        // récupération de l'objet dont l'id est 5
+        $tag5 = $tagRepository->find(5);
 
         // suppression de l'objet seulement s'il existe
-        if ($tag15) {
+        if ($tag5) {
             // suppression de l'objet
-            $em->remove($tag15);
+            $em->remove($tag5);
             $em->flush();
         }
 
@@ -106,7 +106,7 @@ class TestController extends AbstractController
         return $this->render('test/tag.html.twig', [
             'title' => $title,
             'tags' => $tags,
-            'tag' => $tag,
+            'htmlTag' => $htmlTag,
             'cssTag' => $cssTag,
             'nullDescriptionTags' => $nullDescriptionTags,
             'notNullDescriptionTags' => $notNullDescriptionTags,
