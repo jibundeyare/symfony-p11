@@ -180,4 +180,10 @@ class Project
 
         return $this;
     }
+
+    public function __toString()
+    {
+        // foo (id 123)
+        return "{$this->getName()} (id {$this->getId()})";
+    }
 }
