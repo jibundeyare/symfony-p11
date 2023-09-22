@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Tag;
 use App\Form\TagType;
@@ -11,18 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tag')]
+#[Route('/admin/tag')]
 class TagController extends AbstractController
 {
-    #[Route('/', name: 'app_tag_index', methods: ['GET'])]
+    #[Route('/', name: 'app_admin_tag_index', methods: ['GET'])]
     public function index(TagRepository $tagRepository): Response
     {
-        return $this->render('tag/index.html.twig', [
+        return $this->render('admin/tag/index.html.twig', [
             'tags' => $tagRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'app_tag_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_admin_tag_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $tag = new Tag();
@@ -33,24 +33,24 @@ class TagController extends AbstractController
             $entityManager->persist($tag);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin_tag_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tag/new.html.twig', [
+        return $this->renderForm('admin/tag/new.html.twig', [
             'tag' => $tag,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tag_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_admin_tag_show', methods: ['GET'])]
     public function show(Tag $tag): Response
     {
-        return $this->render('tag/show.html.twig', [
+        return $this->render('admin/tag/show.html.twig', [
             'tag' => $tag,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_tag_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_admin_tag_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tag $tag, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(TagType::class, $tag);
@@ -59,16 +59,16 @@ class TagController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin_tag_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tag/edit.html.twig', [
+        return $this->renderForm('admin/tag/edit.html.twig', [
             'tag' => $tag,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tag_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_admin_tag_delete', methods: ['POST'])]
     public function delete(Request $request, Tag $tag, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->request->get('_token'))) {
@@ -76,6 +76,6 @@ class TagController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_admin_tag_index', [], Response::HTTP_SEE_OTHER);
     }
 }
