@@ -7,12 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[Assert\Cascade]
 #[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false, hardDelete: false)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'my_user')]
+#[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
@@ -23,6 +27,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Email()]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -32,6 +38,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 191)]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -137,5 +145,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->student = $student;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        // foo@example.com
+        return "{$this->getEmail()}";
     }
 }

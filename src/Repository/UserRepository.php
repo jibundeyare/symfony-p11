@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\SchoolYear;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,6 +39,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findBySchoolYear(SchoolYear $schoolYear): array
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.student', 's')
+            ->innerJoin('s.schoolYear', 'sy')
+            ->andWhere('sy = :sy')
+            ->setParameter('sy', $schoolYear)
+            ->orderBy('s.firstName', 'ASC')
+            ->addOrderBy('s.lastName', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
 //    /**
