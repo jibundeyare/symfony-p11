@@ -10,9 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false, hardDelete: false)]
 #[ORM\Entity(repositoryClass: TagRepository::class)]
+#[UniqueEntity('name')]
 class Tag
 {
     use SoftDeleteableEntity;
@@ -23,9 +26,12 @@ class Tag
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(min: 3, max: 100)]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 190)]
     private ?string $name = null;
 
+    #[Assert\Length(max: 1000)]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -122,5 +128,11 @@ class Tag
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        // foo (id 123)
+        return "{$this->getName()} (id {$this->getId()})";
     }
 }
