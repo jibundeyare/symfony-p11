@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SchoolYearRepository::class)]
+#[UniqueEntity('name')]
 class SchoolYear
 {
     #[ORM\Id]
@@ -16,15 +19,19 @@ class SchoolYear
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(min: 3, max: 100)]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 190)]
     private ?string $name = null;
 
+    #[Assert\Length(max: 1000)]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $startDate = null;
 
+    #[Assert\GreaterThan(propertyPath: 'startDate')]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDate = null;
 
@@ -117,5 +124,11 @@ class SchoolYear
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        // foo (id 123)
+        return "{$this->getName()} (id {$this->getId()})";
     }
 }
