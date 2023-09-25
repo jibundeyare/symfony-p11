@@ -95,6 +95,18 @@ class TagRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Tag[] Returns an array of Tag objects
+     */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Tag[] Returns an array of Tag objects
 //     */

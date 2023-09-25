@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Tags</h2>
+            {% if tags %}
+            <ul>
+                {% for tag in tags %}
+                    <li><a href="{{ path('app_front_tag_show', {id: tag.id}) }}">{{ tag.name }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
