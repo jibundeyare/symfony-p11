@@ -44,9 +44,13 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
+        // Ce bloc redirige le user vers la page qu'il avait initialement demandé
+        // Si aucune page particulière n'avait été demandée, il est redirigé vers une page en fonction de son rôle (comme prévu plus bas)
+        // if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        //     return new RedirectResponse($targetPath);
+        // }
+
+        // Redirection du user en fonction de son rôle
 
         /** @var \App\Entity\User */
         $user = $token->getUser();
