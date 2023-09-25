@@ -9,5 +9,7 @@
 
     <a href="{{ path('app_profile_index') }}">back to list</a>
 
-    {{ include('profile/_delete_form.html.twig') }}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ include('profile/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}
